@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Spin, Flex, Divider, Table, Button, Radio, Input } from "antd";
+import {
+  Spin,
+  Flex,
+  Divider,
+  Table,
+  Button,
+  Radio,
+  Input,
+  Select,
+  DatePicker,
+} from "antd";
 import DynamicFormModal from "../components/DynamicFormModal";
 import apiService from "../api/apiService";
 import useStore from "../store/store";
 import { useLocation } from "react-router-dom";
 import getDataForCurrentPath from "../utils/getDataForCurrentPath";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-const { Search } = Input;
+dayjs.extend(relativeTime);
+const { Search, TextArea } = Input;
 
-const ItemList = () => {
+const ChildList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState([]); // Comienza con un array vacío
   const [loading, setLoading] = useState(true);
@@ -96,6 +108,7 @@ const ItemList = () => {
       inputType: "select",
       options: inscriptions,
       initialValue: "",
+      selectLabel: "verbose_type",
     },
     {
       name: "first_name",
@@ -255,13 +268,47 @@ const ItemList = () => {
     },
   ];
 
-  let radioOptions = [
-    { id: 0, label: "Todos", name: "todos", value: 0 },
+  const renderField = (field) => {
+    switch (field.inputType) {
+      case "select":
+        return (
+          <Select
+            options={field.options.map((item) => {
+              return {
+                value: item.id,
+                label: `${item.verbose_type} ${item.year}`,
+              };
+            })}
+          />
+        );
+      case "date":
+        return (
+          <DatePicker
+            mode="date"
+            format="YYYY/MM/DD"
+            style={{ width: "100%" }}
+          />
+        );
+      case "textArea":
+        return <TextArea rows={7} placeholder={field.placeholder || ""} />;
+      default:
+        return (
+          <Input
+            placeholder={field.placeholder || ""}
+            type={field.inputType || "text"} // Usa "text" como valor predeterminado
+          />
+        );
+    }
+  };
+
+  let radioInscriptionOptions = [
+    { id: 0, label: `Todos (${data.length})`, name: "todos", value: 0 },
   ].concat(
     inscriptions.map((item) => {
+      const filtered = data.filter((child) => child.inscription_id == item.id);
       return {
         id: item.id,
-        label: item.verbose_type,
+        label: `${item.verbose_type} (${filtered.length})`,
         name: item.type,
         value: item.id,
       };
@@ -289,7 +336,7 @@ const ItemList = () => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
-  const onRadioGroupChange = ({ target }) => {
+  const onInscriptionRadioGroupChange = ({ target }) => {
     if (target.value == 0) {
       setInscriptionTypeFilter(data);
     } else {
@@ -341,11 +388,11 @@ const ItemList = () => {
           <div style={{ width: "100%", overflowX: "auto" }}>
             <Radio.Group
               block
-              options={radioOptions}
+              options={radioInscriptionOptions}
               defaultValue={0}
               optionType="button"
               buttonStyle="solid"
-              onChange={onRadioGroupChange}
+              onChange={onInscriptionRadioGroupChange}
             />
             <Search
               placeholder="Buscar por nombre, apellido, DNI, bautizo o comunión."
@@ -468,6 +515,7 @@ const ItemList = () => {
             onClose={() => setIsModalOpen(false)}
             onSubmit={handleFormSubmit}
             fields={formFields}
+            renderFields={renderField}
           />
         </>
       )}
@@ -475,4 +523,4 @@ const ItemList = () => {
   );
 };
 
-export default ItemList;
+export default ChildList;

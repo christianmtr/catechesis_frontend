@@ -1,37 +1,10 @@
 // src/components/DynamicFormModal.jsx
 import React from "react";
-import { Modal, Form, Input, Button, Select, DatePicker } from "antd";
+import { Modal, Form, Button } from "antd";
 
-const { TextArea } = Input;
 
-const DynamicFormModal = ({ isVisible, onClose, onSubmit, fields }) => {
+const DynamicFormModal = ({ isVisible, onClose, onSubmit, fields, renderFields }) => {
   const [form] = Form.useForm();
-
-  const renderField = (field) => {
-    switch (field.inputType) {
-      case "select":
-        return <Select options={field.options.map(item => {
-          return {value: item.id, label: `${item.verbose_type}-${item.year}`}
-        })} />;
-      case "date":
-        return (
-          <DatePicker
-            mode="date"
-            format="YYYY/MM/DD"
-            style={{ width: "100%" }}
-          />
-        );
-      case "textArea":
-        return <TextArea rows={7} placeholder={field.placeholder || ""} />
-      default:
-        return (
-          <Input
-            placeholder={field.placeholder || ""}
-            type={field.inputType || "text"} // Usa "text" como valor predeterminado
-          />
-        );
-    }
-  };
 
   const handleOk = async () => {
     try {
@@ -71,7 +44,7 @@ const DynamicFormModal = ({ isVisible, onClose, onSubmit, fields }) => {
             hidden={field.inputType == "hidden"}
             initialValue={field.initialValue}
           >
-            {renderField(field)}
+            {renderFields(field)}
           </Form.Item>
         ))}
       </Form>
