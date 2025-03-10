@@ -1,5 +1,5 @@
 // src/layout/Layout.jsx
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Layout, Menu, Avatar, Dropdown } from "antd";
 import { useNavigate, Outlet } from "react-router-dom";
 import useStore from "../store/store";
@@ -40,7 +40,7 @@ const AppLayout = () => {
   ];
   if (user?.user_type == "A") {
     optionsMenu.push({ label: "Catequistas", key: "catequistas" });
-    optionsMenu.push({ label: "Aulas", key: "aulas" });
+    optionsMenu.push({ label: "Grupos", key: "grupos" });
   }
 
   const userMenu = (
@@ -89,14 +89,15 @@ const AppLayout = () => {
 
         {/* Sección derecha: usuario */}
         <Dropdown overlay={userMenu} trigger={["click"]}>
-  <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-    <Avatar src="/default-avatar.png" size="large" />
-    <span style={{ marginLeft: "10px", fontWeight: "500" }}>
-      {user?.first_name || "Usuario"}
-    </span>
-  </div>
-</Dropdown>
-
+          <div
+            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+          >
+            <Avatar src="/default-avatar.png" size="large" />
+            <span style={{ marginLeft: "10px", fontWeight: "500" }}>
+              {user?.first_name || "Usuario"}
+            </span>
+          </div>
+        </Dropdown>
       </Header>
 
       <Content

@@ -13,8 +13,6 @@ import {
 import DynamicFormModal from "../components/DynamicFormModal";
 import apiService from "../api/apiService";
 import useStore from "../store/store";
-import { useLocation } from "react-router-dom";
-import getDataForCurrentPath from "../utils/getDataForCurrentPath";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -27,8 +25,6 @@ const ChildList = () => {
   const [loading, setLoading] = useState(true);
   const [inscriptionTypeFilter, setInscriptionTypeFilter] = useState([]);
   const { inscriptions } = useStore();
-  const location = useLocation();
-  const currentPathname = location.pathname;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -326,8 +322,9 @@ const ChildList = () => {
       console.error("Error al crear un elemento:", error);
     } finally {
       setLoading(true);
-      const dataList = await getDataForCurrentPath(currentPathname);
+      const dataList = await apiService.getChildList();
       setData(dataList); // Establecer los datos iniciales
+      setInscriptionTypeFilter(dataList);
       setLoading(false);
     }
   };

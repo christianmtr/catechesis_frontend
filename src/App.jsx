@@ -7,6 +7,7 @@ import Login from "./pages/Login"; // Página Login
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
+import RoomsList from "./pages/RoomsList";
 
 const App = () => {
   return (
@@ -19,7 +20,7 @@ const App = () => {
         <Route element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="inscripciones" element={<ChildList />} />
-          {/* <Route path="grupos" element={<ItemsList />} /> */}
+          <Route path="grupos" element={<RoomsList />} />
           <Route path="perfil" element={<Profile />} />
         </Route>
       </Route>

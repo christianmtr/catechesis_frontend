@@ -37,11 +37,29 @@ const apiService = {
     return response.data;
   },
   updateUsername: async (user_id, data) => {
-    const response = await apiClient.patch(`/core/users/${user_id}/update_username/`, {data});
+    const response = await apiClient.patch(
+      `/core/users/${user_id}/update_username/`,
+      { data }
+    );
     return response.data;
   },
   changePassword: async (user_id, data) => {
-    const response = await apiClient.post(`/core/users/${user_id}/set_password/`, data);
+    const response = await apiClient.post(
+      `/core/users/${user_id}/set_password/`,
+      data
+    );
+    return response.data;
+  },
+  getCatechists: async () => {
+    const response = await apiClient.get("/core/users/get_catechist_list/");
+    return response.data;
+  },
+  getRooms: async () => {
+    const response = await apiClient.get("/core/rooms/");
+    return response.data;
+  },
+  createRoom: async (data) => {
+    const response = await apiClient.post("/core/rooms/", data);
     return response.data;
   },
 };
