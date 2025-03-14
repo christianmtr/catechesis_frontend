@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import RoomsList from "./pages/RoomsList";
+import Room from "./pages/Room";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="inscripciones" element={<ChildList />} />
           <Route path="grupos" element={<RoomsList />} />
+          <Route path="grupo/:roomId" element={<Room />} />
           <Route path="perfil" element={<Profile />} />
         </Route>
       </Route>

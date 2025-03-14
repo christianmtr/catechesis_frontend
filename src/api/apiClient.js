@@ -27,7 +27,10 @@ apiClient.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       // Aquí puedes manejar la lógica de refrescar el token o redirigir al login
-      console.error("Token expirado o no autorizado");
+      console.error(
+        "Token expirado o no autorizado:",
+        error.response.data?.detail
+      );
     }
     return Promise.reject(error);
   }

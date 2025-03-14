@@ -58,8 +58,31 @@ const apiService = {
     const response = await apiClient.get("/core/rooms/");
     return response.data;
   },
+  getRoom: async (roomId) => {
+    const response = await apiClient.get(`/core/rooms/${roomId}/`);
+    return response.data;
+  },
   createRoom: async (data) => {
     const response = await apiClient.post("/core/rooms/", data);
+    return response.data;
+  },
+  getEnrolledChildren: async (roomId) => {
+    const response = await apiClient.get(
+      `/core/rooms/${roomId}/enrolled_children/`
+    );
+    return response.data;
+  },
+  getNotEnrolledChildren: async (roomId) => {
+    const response = await apiClient.get(
+      `/core/rooms/${roomId}/not_enrolled_children/`
+    );
+    return response.data;
+  },
+  enrollChildren: async (roomId, data) => {
+    const response = await apiClient.post(
+      `/core/rooms/${roomId}/enroll_with_user_id_list/`,
+      data
+    );
     return response.data;
   },
 };

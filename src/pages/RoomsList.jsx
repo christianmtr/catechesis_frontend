@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Spin, Table, Button, Radio, Input, Select, Space } from "antd";
+import {
+  Spin,
+  Table,
+  Button,
+  Radio,
+  Input,
+  Select,
+  Space,
+  Breadcrumb,
+} from "antd";
+import { HomeOutlined } from "@ant-design/icons";
 import DynamicFormModal from "../components/DynamicFormModal";
 import apiService from "../api/apiService";
 import useStore from "../store/store";
+import { useNavigate, NavLink } from "react-router";
 
 const RoomsList = () => {
   const [catechists, setCatechists] = useState([]);
@@ -13,6 +24,7 @@ const RoomsList = () => {
     []
   );
   const { inscriptions } = useStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,7 +72,14 @@ const RoomsList = () => {
       key: "action",
       render: (_, record) => (
         <Space size="small">
-          <Button type="link">Ver aula</Button>
+          <Button
+            type="link"
+            onClick={() => {
+              navigate(`/grupo/${record.id}`);
+            }}
+          >
+            Ver aula
+          </Button>
         </Space>
       ),
     },
@@ -70,7 +89,7 @@ const RoomsList = () => {
     { id: 0, label: `Todos (${rooms.length})`, name: "todos", value: 0 },
   ].concat(
     inscriptions.map((item) => {
-      const filtered = rooms.filter((room) => room.inscription == item.id);
+      const filtered = rooms.filter((room) => room.inscription_id == item.id);
       return {
         id: item.id,
         label: `${item.verbose_type} (${filtered.length})`,
@@ -85,7 +104,7 @@ const RoomsList = () => {
       setInscriptionTypeRoomFilter(rooms);
     } else {
       setInscriptionTypeRoomFilter(
-        rooms.filter((item) => item.inscription == target.value)
+        rooms.filter((item) => item.inscription_id == target.value)
       );
     }
   };
@@ -195,6 +214,20 @@ const RoomsList = () => {
         padding: "20px",
       }}
     >
+      <Breadcrumb
+        items={[
+          {
+            title: (
+              <NavLink to="/">
+                <HomeOutlined />
+              </NavLink>
+            ),
+          },
+          {
+            title: "Grupos",
+          },
+        ]}
+      />
       <h1>Lista de grupos</h1>
       <p>Aquí puedes ver y agregar nuevos elementos.</p>
 
