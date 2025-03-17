@@ -68,6 +68,11 @@ const RoomsList = () => {
       key: "third_catechist",
     },
     {
+      title: "Cant. Inscritos",
+      dataIndex: "children_count",
+      key: "children_count",
+    },
+    {
       title: "Acción",
       key: "action",
       render: (_, record) => (
