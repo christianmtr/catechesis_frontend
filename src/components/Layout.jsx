@@ -38,6 +38,9 @@ const AppLayout = () => {
     { label: "Inicio", key: "" },
     { label: "Inscripciones", key: "inscripciones" },
   ];
+  if (user?.my_room != null) {
+    optionsMenu.push({ label: "Mi aula", key: `grupo/${user.my_room}` });
+  }
   if (user?.user_type == "A") {
     optionsMenu.push({ label: "Catequistas", key: "catequistas" });
     optionsMenu.push({ label: "Grupos", key: "grupos" });

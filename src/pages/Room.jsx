@@ -9,6 +9,7 @@ import {
   Tabs,
   Modal,
   Breadcrumb,
+  Descriptions,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import apiService from "../api/apiService";
@@ -199,6 +200,33 @@ const Room = () => {
       ) : (
         <>
           <div style={{ width: "100%", overflowX: "auto" }}>
+            <Divider dashed />
+            <Descriptions
+              title="Catequistas"
+              items={[
+                {
+                  key: 1,
+                  label: "Coordinador",
+                  children: roomInfo.first_catechist || "---",
+                },
+                {
+                  key: 2,
+                  label: "Primer apoyo",
+                  children: roomInfo.second_catechist || "---",
+                },
+                {
+                  key: 3,
+                  label: "Segundo apoyo",
+                  children: roomInfo.third_catechist || "---",
+                },
+                {
+                  key: 4,
+                  label: "Cantidad de inscritos",
+                  children: enrolledChildren?.length || "---",
+                },
+              ]}
+            />
+            <Divider dashed />
             <Tabs
               defaultActiveKey="1"
               items={[
