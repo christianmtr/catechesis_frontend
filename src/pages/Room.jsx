@@ -30,6 +30,7 @@ const Room = () => {
     selectedNotEnrolledChildrenRowKeys,
     setSelectedNotEnrolledChildrenRowKeys,
   ] = useState([]);
+  const { user } = useStore();
   const { roomId } = useParams();
 
   const fetchInitialData = async () => {
@@ -39,8 +40,10 @@ const Room = () => {
       setRoomInfo(room);
       const enrolled = await apiService.getEnrolledChildren(roomId);
       setEnrolledChildren(enrolled);
-      const notEnrolled = await apiService.getNotEnrolledChildren(roomId);
-      setNotEnrolledChildren(notEnrolled);
+      if (user?.user_type == "A") {
+        const notEnrolled = await apiService.getNotEnrolledChildren(roomId);
+        setNotEnrolledChildren(notEnrolled);
+      }
       setLoading(false);
     } catch (error) {
       console.error("Ocurrió un error al obtener las listas:", error);
@@ -401,6 +404,7 @@ const Room = () => {
                       />
                     </Flex>
                   ),
+                  disabled: user?.user_type != "A",
                 },
               ]}
             />
