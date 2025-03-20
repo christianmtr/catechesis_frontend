@@ -85,6 +85,13 @@ const apiService = {
     );
     return response.data;
   },
+  unrollChildren: async (roomId, data) => {
+    const response = await apiClient.post(
+      `/core/rooms/${roomId}/unroll_with_user_id_list/`,
+      data
+    );
+    return response.data;
+  },
 };
 
 export default apiService;

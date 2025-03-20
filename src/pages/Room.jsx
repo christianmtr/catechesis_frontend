@@ -21,6 +21,7 @@ const { Search } = Input;
 
 const Room = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRemovalModalOpen, setIsRemovalModalOpen] = useState(false);
   const [confirmModalLoading, setConfirmModalLoading] = useState(false);
   const [roomInfo, setRoomInfo] = useState([]);
   const [enrolledChildren, setEnrolledChildren] = useState([]);
@@ -30,6 +31,8 @@ const Room = () => {
     selectedNotEnrolledChildrenRowKeys,
     setSelectedNotEnrolledChildrenRowKeys,
   ] = useState([]);
+  const [selectedEnrolledChildrenRowKeys, setSelectedEnrolledChildrenRowKeys] =
+    useState([]);
   const { user } = useStore();
   const { roomId } = useParams();
 
@@ -136,6 +139,7 @@ const Room = () => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
+  // unrolled children selection stuff
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedNotEnrolledChildrenRowKeys(newSelectedRowKeys);
@@ -152,13 +156,41 @@ const Room = () => {
       user_ids: selectedNotEnrolledChildrenRowKeys,
     });
     setSelectedNotEnrolledChildrenRowKeys([]);
+    setSelectedEnrolledChildrenRowKeys([]);
     setConfirmModalLoading(false);
     setIsModalOpen(false);
     await fetchInitialData();
   };
+  // unrolled children selection stuff
+
+  // enrolled children selection stuff
+  const onSelectEnrolledChange = (newSelectedRowKeys) => {
+    console.log("selectedEnrolledRowKeys changed: ", newSelectedRowKeys);
+    setSelectedEnrolledChildrenRowKeys(newSelectedRowKeys);
+  };
+  const rowEnrolledSelection = {
+    selectedEnrolledChildrenRowKeys,
+    onChange: onSelectEnrolledChange,
+  };
+  const hasEnrolledSelected = selectedEnrolledChildrenRowKeys.length > 0;
+
+  const handleRemovalModalOk = async () => {
+    setConfirmModalLoading(true);
+    await apiService.unrollChildren(roomId, {
+      user_ids: selectedEnrolledChildrenRowKeys,
+    });
+    setSelectedEnrolledChildrenRowKeys([]);
+    setSelectedNotEnrolledChildrenRowKeys([]);
+    setConfirmModalLoading(false);
+    setIsRemovalModalOpen(false);
+    await fetchInitialData();
+  };
+  // enrolled children selection stuff
+
   const handleModalCancel = () => {
     console.log("Clicked cancel button");
     setIsModalOpen(false);
+    setIsRemovalModalOpen(false);
   };
 
   return (
@@ -244,6 +276,22 @@ const Room = () => {
                         allowClear
                         enterButton="Buscar"
                       />
+                      <Flex align="center" gap="middle">
+                        <Button
+                          type="primary"
+                          danger
+                          onClick={() => setIsRemovalModalOpen(true)}
+                          disabled={
+                            !hasEnrolledSelected || user?.user_type !== "A"
+                          }
+                          loading={loading}
+                        >
+                          Remover seleccionados
+                        </Button>
+                        {hasEnrolledSelected
+                          ? `${selectedEnrolledChildrenRowKeys.length} niños/jóvenes seleccionados`
+                          : null}
+                      </Flex>
                       <Table
                         dataSource={
                           Array.isArray(enrolledChildren)
@@ -252,7 +300,7 @@ const Room = () => {
                         } // Asegura que data siempre sea un array
                         columns={columns}
                         rowKey={(record) => record.id}
-                        pagination={{ pageSize: 10 }}
+                        pagination={{ pageSize: 30 }}
                         scroll={{ x: 800, y: 400 }}
                         locale={{
                           filter: "Filtrar",
@@ -349,6 +397,7 @@ const Room = () => {
                           target: "sorter-icon",
                         }}
                         onChange={onTableChange}
+                        rowSelection={rowEnrolledSelection}
                       />
                     </>
                   ),
@@ -388,7 +437,7 @@ const Room = () => {
                         } // Asegura que data siempre sea un array
                         columns={columns}
                         rowKey={(record) => record.id}
-                        pagination={{ pageSize: 10 }}
+                        pagination={{ pageSize: 30 }}
                         scroll={{ x: 800, y: 400 }}
                         locale={{
                           filter: "Filtrar",
@@ -422,6 +471,21 @@ const Room = () => {
           >
             <p>
               Inscribiendo a {selectedNotEnrolledChildrenRowKeys.length}{" "}
+              niños/jóvenes
+            </p>
+          </Modal>
+          <Modal
+            title="Remover seleccionados"
+            open={isRemovalModalOpen}
+            onOk={handleRemovalModalOk}
+            confirmLoading={confirmModalLoading}
+            onCancel={handleModalCancel}
+            okText="Remover seleccionados"
+            cancelText="Cancelar"
+            okButtonProps={{ disabled: user?.user_type != "A" }}
+          >
+            <p>
+              Removiendo a {selectedEnrolledChildrenRowKeys.length}{" "}
               niños/jóvenes
             </p>
           </Modal>
